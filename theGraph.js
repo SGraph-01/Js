@@ -28,11 +28,11 @@ async function start(addrs) {
         let result;
         
         if (await isContract(addrs[i])) {
-            let contract = new web3.eth.Contract(contractABI, addrs[i]);
+            const contract = new web3.eth.Contract(contractABI, addrs[i]);
             result = await contract.methods.beneficiary().call();
             console.log(`Address: ${addrs[i]} - Beneficiary: ${result}`);
         } else {
-            result = addrs[i];
+            result = eip55(addrs[i]);
             console.log(`Address: ${addrs[i]} - Beneficiary: -//-`);
         }
 
@@ -52,7 +52,7 @@ async function start(addrs) {
 fs.createReadStream('addr.csv')
     .pipe(fastcsv.parse({ headers: false }))
     .on('data', (row) => {
-        addrs.push(eip55(row[0]));
+        addrs.push(row[0]);
     })
     .on('end', () => {
         console.log('Reading csv is complete.');
